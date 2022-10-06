@@ -1,0 +1,46 @@
+overwrite: true
+schema: "https://api-eu-central-1.graphcms.com/v2/cl04864ta158801xo95gsh9od/master"
+documents: "graphql/*.graphql"
+extensions:
+  codegen:
+    generates:
+      ./generated/graphql.tsx:
+        plugins:
+          - 'typescript'
+          - 'typescript-operations'
+          - 'typescript-react-apollo'
+        config:
+          reactApolloVersion: 3
+          withHooks: true
+          withHOC: false
+          withComponent: false
+          immutableTypes: true
+          dedupeOperationSuffix: true
+          useTypeImports: true
+          scalars:
+            DateTime: string
+            UUID: string
+            JSONString: string
+      ./generated/page.tsx:
+        config:
+          reactApolloVersion: 3
+          documentMode: external
+          importDocumentNodeExternallyFrom: ./graphql
+          withHooks: false
+          withHOC: false
+          apolloClientInstanceImport: '../lib/apolloClient'
+          scalars:
+            DateTime: string
+            UUID: string
+            JSONString: string
+        preset: import-types
+        presetConfig:
+          typesPath: ./graphql
+        plugins:
+          - graphql-codegen-apollo-next-ssr
+      generated/graphql.schema.json:
+        plugins:
+          - "introspection"
+    hooks:
+      afterAllFileWrite:
+        - prettier --write
